@@ -1,13 +1,15 @@
 <template>
   <div id="app">
     <h2>calculate</h2>
-    <sum-function :num1="num1" :num2="num2" v-on:getSumFromChild="receiveChildSum"></sum-function>
+    <SumFunction :num1="num1" :num2="num2" v-on:getSumFromChild="receiveChildSum"></SumFunction>
     <p>从子组件获取到的值：{{sumFromChild}}</p>
+    <FlowCanvas type = "primary">this is a test</FlowCanvas>
   </div>
 </template>
 
 <script>
-import sumFunction from './paiui/test/sum-function'; 
+import SumFunction from './paiui/sum-function/SumFunction';
+import FlowCanvas from './paiui/flow-canvas/FlowCanvas'; 
 export default {
   name: 'app',
   data () {
@@ -18,7 +20,8 @@ export default {
     }
   },
   components:{ //注册插件
-    sumFunction
+    SumFunction,
+    FlowCanvas
   },
   methods:{
     receiveChildSum(sum){ //自定义事件，接收子组件的和
