@@ -9,7 +9,7 @@
     </div>
     <div class="days_area">
       <div class="day week" v-for="week in weeks" :key="week">{{week}}</div>
-      <div class="day" @click="chooseThisDay(day.gregorian)" v-for="(day, index) in days" :key="index" :class="day.gregorian === today ? 'choose_day' : ''">
+      <div class="day" @click="chooseThisDay(day.gregorian)" v-for="(day, index) in days" :key="index" :class="day.type === 0 ? 'invalid_day' : (day.gregorian === today ? 'choose_day' : '')">
         <p>{{day.gregorian}}</p>
         <span>{{day.lunar}}</span>
       </div>
@@ -33,7 +33,7 @@ export default {
   mounted () {
     const now = new Date()
     this.year = now.getFullYear()
-    this.month = now.getMonth() +1
+    this.month = now.getMonth()+1
     this.today = now.getDate()
     this.getDays()
   },
@@ -43,12 +43,18 @@ export default {
       this.days = []
       const time = new Date()
       time.setFullYear(this.year, this.month-1, 0)
+      let lastDate = time.getDate()
       for (let i = 0; i < time.getDay(); i++) {
-        this.days.push({gregorian: '', lunar: ''})
+        let t = lastDate-time.getDay() + i+1;
+        this.days.push({gregorian: t, lunar: this.getLunarDay(this.year, this.month, t),type: 0})
       }
-
+      time.setFullYear(this.year, this.month, 0)
       for (let i = 1; i <= time.getDate(); i++) {
-        this.days.push({gregorian: i, lunar: this.getLunarDay(this.year, this.month, i)})
+        this.days.push({gregorian: i, lunar: this.getLunarDay(this.year, this.month, i),type: 1})
+      }
+      let overlength = 42-this.days.length
+      for (let i = 1; i <= overlength; i++) {
+        this.days.push({gregorian: i, lunar: this.getLunarDay(this.year, this.month+1, i),type: 0})
       }
     },
 
@@ -121,15 +127,17 @@ export default {
             cMonth--
           }
         }
-        // let run = ''
+        let run = ''
         let cDayStr = numString.charAt(cDay - 1)
-        /* if (cMonth < 1) {
-          run = '(闰)'
-        } */
+        if (cMonth < 1) {
+          run = '闰'
+          cMonth = Math.abs(cMonth);
+        } 
         if (cDay % 10 !== 0 || cDay === 10) {
           cDayStr = numString.charAt((cDay - 1) % 10)
         }
-        return cDay === 1 ? monString.charAt(cMonth - 1) + '月' : (cDay < 11 ? '初' : (cDay < 20 ? '十' : (cDay < 30 ? '廿' : '三十'))) + cDayStr 
+        console.log("["+cMonth+"]")
+        return cDay === 1 ? run + monString.charAt(cMonth - 1) + '月' : (cDay < 11 ? '初' : (cDay < 20 ? '十' : (cDay < 21 ? '二十' : (cDay < 30 ? '廿' : '三十')))) + cDayStr 
       }
     },
     getBit (m, n) {
@@ -177,7 +185,7 @@ export default {
         }
       }
       .week{
-        background-color: dodgerblue;
+        background-color: rgba(37, 143, 248, 0.938);
         color: #fff;
         font-weight: bold;
         height: 6vh;
@@ -188,6 +196,9 @@ export default {
         background-color: dodgerblue;
         color: #fff;
         font-weight: bold;
+      }
+      .invalid_day{
+        color: #c9c9c9;
       }
     }
   }
