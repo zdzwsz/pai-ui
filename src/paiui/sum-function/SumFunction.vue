@@ -11,7 +11,7 @@
 
 <script>
   export default({
-    name:'addFunc',
+    name:'p-sum-function',
     props:['num1','num2'],
     data() {
       return{

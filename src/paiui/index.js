@@ -1,10 +1,12 @@
-import FlowCanvas from './flow-canvas/index';
+import Calculator from './calculator/index';
 import SumFunction from './sum-function/index'
-
+import Calendar from './calendar/index'
 const components = [
-    FlowCanvas,
-    SumFunction
+    Calculator,
+    SumFunction,
+    Calendar
 ]
+
 
 
 const install = function(Vue, opts = {}) {
@@ -18,6 +20,8 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 export default {
-    FlowCanvas,
-    SumFunction
+    install,
+    Calculator,
+    SumFunction,
+    Calendar
 }
